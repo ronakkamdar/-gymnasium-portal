@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Vocabulary & Grammar Test: Unit 1 (Station 1 & 2)</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #f59e0b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --error: #b91c1c;
+      --error-bg: #fee2e2;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 16px;
+      max-width: 860px;
+      margin: 0 auto 60px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 24px 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      opacity: 0.92;
+    }
+
+    /* Scoreboard */
+    .scoreboard {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: none;
+      border: 2px solid var(--primary-light);
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .scoreboard.visible {
+      display: block;
+    }
+
+    .score-title {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .score-value {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .score-feedback {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-badge {
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    /* Question Items */
+    .q-item {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .q-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .q-label {
+      font-weight: 600;
+      font-size: 1.02rem;
+      margin-bottom: 6px;
+      display: block;
+      color: #1e293b;
+    }
+
+    .q-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* Inputs & Selects */
+    input[type="text"] {
+      width: 100%;
+      height: 50px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #f8fafc;
+      color: var(--text);
+      transition: all 0.2s ease;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    select {
+      width: 100%;
+      height: 50px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background-color: #f8fafc;
+      color: var(--text);
+      cursor: pointer;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Cloze Lines */
+    .cloze-sentence {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cloze-sentence input[type="text"] {
+      display: inline-block;
+      width: 160px;
+      height: 46px;
+      text-align: center;
+      margin: 0 4px;
+    }
+
+    .cloze-sentence select {
+      display: inline-block;
+      width: 140px;
+      height: 46px;
+      margin: 0 4px;
+      padding-right: 32px;
+    }
+
+    /* Choice Cards */
+    .choice-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    @media (min-width: 600px) {
+      .choice-group.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .choice-card {
+      display: flex;
+      align-items: center;
+      min-height: 52px;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #f8fafc;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .choice-card:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .choice-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-indicator {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #94a3b8;
+      border-radius: 50%;
+      margin-right: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .choice-card input[type="radio"]:checked + .radio-indicator {
+      border-color: var(--primary);
+      background-color: var(--primary);
+    }
+
+    .choice-card input[type="radio"]:checked + .radio-indicator::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .choice-card.selected {
+      border-color: var(--primary-light);
+      background: #eff6ff;
+    }
+
+    /* Feedback & Highlight */
+    .feedback-msg {
+      margin-top: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .is-correct {
+      border-color: var(--success) !important;
+      background-color: var(--success-bg) !important;
+    }
+
+    .is-incorrect {
+      border-color: var(--error) !important;
+      background-color: var(--error-bg) !important;
+    }
+
+    .feedback-msg.show-correct {
+      display: block;
+      color: var(--success);
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .feedback-msg.show-incorrect {
+      display: block;
+      color: var(--error);
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    /* Sticky Footer Action Bar */
+    .action-bar {
+      position: sticky;
+      bottom: 16px;
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 12px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      z-index: 100;
+      margin-top: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      height: 52px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:active {
+      background: #172554;
+      transform: scale(0.99);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-secondary:active {
+      background: #cbd5e1;
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>English Vocabulary & Grammar Test</h1>
+    <p>Unit 1 (Station 1 & Station 2) &bull; Interaktiver Übungstest (S. 176–177)</p>
+  </header>
+
+  <!-- Scoreboard -->
+  <div id="scoreboard" class="scoreboard">
+    <div class="score-title">Dein Gesamtergebnis:</div>
+    <div id="scoreValue" class="score-value">0 / 0 (0%)</div>
+    <div id="scoreFeedback" class="score-feedback"></div>
+  </div>
+
+  <form id="quizForm" onsubmit="return false;">
+
+    <!-- SECTION 1: Vokabelübersetzung & Formen (Station 1) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-badge">1</span>
+        <div>
+          <h2 class="section-title">Vocabulary & Forms (Station 1)</h2>
+          <p class="section-desc">Aus Unit 1, Station 1 (S. 176). Gib das passende englische Wort bzw. die Form ein.</p>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_voc_1">1. „fliegen“ &rarr; Wie lautet die Vergangenheitsform (Past Simple) von <em>to fly</em>?</label>
+        <div class="q-sub">Infinitiv: to fly &rarr; Past form?</div>
+        <input type="text" id="q_voc_1" data-answer="flew" placeholder="z. B. flew" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_voc_1"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_voc_2">2. „versprechen“ auf Englisch:</label>
+        <div class="q-sub">Tipp: Lautschrift ['prɒmɪs]</div>
+        <input type="text" id="q_voc_2" data-answer="promise|to promise" placeholder="z. B. to promise" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_voc_2"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_voc_3">3. „auspacken“ auf Englisch (Gegenteil von <em>to pack</em>):</label>
+        <div class="q-sub">Lautschrift [ʌn'pæk]</div>
+        <input type="text" id="q_voc_3" data-answer="unpack|to unpack" placeholder="z. B. to unpack" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_voc_3"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_voc_4">4. „Abschied / Abschieds-“ auf Englisch:</label>
+        <div class="q-sub">Wie in: <em>„... party for her“</em></div>
+        <input type="text" id="q_voc_4" data-answer="farewell" placeholder="z. B. farewell" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_voc_4"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_voc_5">5. Unregelmäßiger Plural: <em>child</em> (Kind) &rarr; Plural?</label>
+        <div class="q-sub">Aus dem Vokabelteil S. 177: child ['tʃaɪld] &rarr; pl?</div>
+        <input type="text" id="q_voc_5" data-answer="children" placeholder="z. B. children" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_voc_5"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Gegenteile & Wortpaare (Antonyms) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-badge">2</span>
+        <div>
+          <h2 class="section-title">Opposites & Word Pairs (&harr;)</h2>
+          <p class="section-desc">Finde das exakte Antonym aus den Vokabeleinträgen der Seiten 176–177.</p>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_opp_1">1. to hate &harr; ______</label>
+        <div class="q-sub">Buchhinweis: „to hate &harr; to ...“</div>
+        <input type="text" id="q_opp_1" data-answer="love|to love" placeholder="Gegenteil von hassen" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_opp_1"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_opp_2">2. to laugh &harr; ______</label>
+        <div class="q-sub">Buchhinweis: „to laugh &harr; to ...“ (lachen &harr; weinen)</div>
+        <input type="text" id="q_opp_2" data-answer="cry|to cry" placeholder="Gegenteil von lachen" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_opp_2"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_opp_3">3. Zeitreihe vervollständigen: <em>yesterday &ndash; today &ndash; ______</em></label>
+        <div class="q-sub">gestern &ndash; heute &ndash; morgen</div>
+        <input type="text" id="q_opp_3" data-answer="tomorrow" placeholder="z. B. tomorrow" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_opp_3"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Wortwahl im Kontext & Grammatik -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-badge">3</span>
+        <div>
+          <h2 class="section-title">Context & Multiple Choice (Station 1 & 2)</h2>
+          <p class="section-desc">Wähle die passende Formulierung anhand der Beispielsätze aus dem Lehrbuch.</p>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <span class="q-label">1. Höflichkeit: Wie formuliert man den Wunsch höflicher als „I want to...“?</span>
+        <div class="choice-group" data-question="q_mc_polite" data-answer="I'd like to...">
+          <label class="choice-card">
+            <input type="radio" name="q_mc_polite" value="I'd like to...">
+            <span class="radio-indicator"></span>
+            <span>I'd like to... (= I would like to)</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_polite" value="I must...">
+            <span class="radio-indicator"></span>
+            <span>I must...</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_polite" value="I should...">
+            <span class="radio-indicator"></span>
+            <span>I should...</span>
+          </label>
+        </div>
+        <div class="feedback-msg" id="fb_q_mc_polite"></div>
+      </div>
+
+      <div class="q-item">
+        <span class="q-label">2. AE vs. BE: Was bedeutet das amerikanische Wort „soccer“ in Europa?</span>
+        <div class="choice-group cols-2" data-question="q_mc_soccer" data-answer="football">
+          <label class="choice-card">
+            <input type="radio" name="q_mc_soccer" value="football">
+            <span class="radio-indicator"></span>
+            <span>football (Fußball)</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_soccer" value="basketball">
+            <span class="radio-indicator"></span>
+            <span>basketball</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_soccer" value="baseball">
+            <span class="radio-indicator"></span>
+            <span>baseball</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_soccer" value="hockey">
+            <span class="radio-indicator"></span>
+            <span>hockey</span>
+          </label>
+        </div>
+        <div class="feedback-msg" id="fb_q_mc_soccer"></div>
+      </div>
+
+      <div class="q-item">
+        <span class="q-label">3. Synonyme & Sprachregister: Welches Verb entspricht dem Online-Begriff <em>„to chat“</em> laut Buch?</span>
+        <div class="choice-group cols-2" data-question="q_mc_chat" data-answer="to talk">
+          <label class="choice-card">
+            <input type="radio" name="q_mc_chat" value="to talk">
+            <span class="radio-indicator"></span>
+            <span>to talk (sprechen/plaudern)</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_chat" value="to write">
+            <span class="radio-indicator"></span>
+            <span>to write</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_chat" value="to clap">
+            <span class="radio-indicator"></span>
+            <span>to clap</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_chat" value="to carry">
+            <span class="radio-indicator"></span>
+            <span>to carry</span>
+          </label>
+        </div>
+        <div class="feedback-msg" id="fb_q_mc_chat"></div>
+      </div>
+
+      <div class="q-item">
+        <span class="q-label">4. Station 2: Was bedeutet <em>„sale“</em> im Einkaufskontext?</span>
+        <div class="choice-group cols-2" data-question="q_mc_sale" data-answer="Verkauf; Schlussverkauf">
+          <label class="choice-card">
+            <input type="radio" name="q_mc_sale" value="Verkauf; Schlussverkauf">
+            <span class="radio-indicator"></span>
+            <span>Verkauf / Schlussverkauf</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_sale" value="Austausch">
+            <span class="radio-indicator"></span>
+            <span>Austausch (exchange)</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_sale" value="Ausstattung">
+            <span class="radio-indicator"></span>
+            <span>Ausstattung (equipment)</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_sale" value="Ereignis">
+            <span class="radio-indicator"></span>
+            <span>Ereignis (event)</span>
+          </label>
+        </div>
+        <div class="feedback-msg" id="fb_q_mc_sale"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Feste Wendungen & Präpositionen (Lückentext) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-badge">4</span>
+        <div>
+          <h2 class="section-title">Prepositions & Collocations</h2>
+          <p class="section-desc">Ergänze die exakten Präpositionen und Signalwörter aus den Buch-Beispielsätzen.</p>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_prep_good">1. Begabung ausdrücken („gut sein in etwas“):</label>
+        <div class="cloze-sentence">
+          <span>I'm very good</span>
+          <select id="q_prep_good" data-answer="at">
+            <option value="">-- preposition --</option>
+            <option value="in">in</option>
+            <option value="at">at</option>
+            <option value="on">on</option>
+            <option value="with">with</option>
+          </select>
+          <span>football.</span>
+        </div>
+        <div class="feedback-msg" id="fb_q_prep_good"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_prep_ago">2. Zeitangabe in der Vergangenheit („vor zwei Wochen“):</label>
+        <div class="cloze-sentence">
+          <span>I visited my aunt two weeks</span>
+          <input type="text" id="q_prep_ago" data-answer="ago" placeholder="ago" style="width: 120px;" autocomplete="off" autocorrect="off" autocapitalize="none">
+          <span>.</span>
+        </div>
+        <div class="feedback-msg" id="fb_q_prep_ago"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_prep_phrasal">3. Phrasal Verb: Ein Zimmer aufräumen / sauber machen:</label>
+        <div class="cloze-sentence">
+          <span>Ruby, can you tidy</span>
+          <select id="q_prep_phrasal" data-answer="up">
+            <option value="">-- particle --</option>
+            <option value="in">in</option>
+            <option value="up">up</option>
+            <option value="out">out</option>
+            <option value="on">on</option>
+          </select>
+          <span>your room, please? It's a mess again!</span>
+        </div>
+        <div class="feedback-msg" id="fb_q_prep_phrasal"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_prep_himself">4. Reflexivpronomen: Er möchte keine Hilfe, er will alles alleine machen.</label>
+        <div class="cloze-sentence">
+          <span>He wants to do everything</span>
+          <input type="text" id="q_prep_himself" data-answer="himself" placeholder="himself" style="width: 140px;" autocomplete="off" autocorrect="off" autocapitalize="none">
+          <span>.</span>
+        </div>
+        <div class="feedback-msg" id="fb_q_prep_himself"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Vokabeln im Beispielsatz (S. 177) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-badge">5</span>
+        <div>
+          <h2 class="section-title">Sentences & Expressions (S. 177)</h2>
+          <p class="section-desc">Ergänze die Vokabeln genau so, wie sie auf Seite 177 vorkommen.</p>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_sent_rubbish">1. „Müll; Gerümpel“ auf Englisch (im Park):</label>
+        <div class="cloze-sentence">
+          <span>For our school's environment project we collected</span>
+          <input type="text" id="q_sent_rubbish" data-answer="rubbish" placeholder="z. B. rubbish" style="width: 150px;" autocomplete="off" autocorrect="off" autocapitalize="none">
+          <span>in the park.</span>
+        </div>
+        <div class="feedback-msg" id="fb_q_sent_rubbish"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_sent_env">2. Wie heißt das englische Wort für „Umwelt / Umgebung“?</label>
+        <div class="q-sub">Lautschrift: [ɪn'vaɪrənmənt]</div>
+        <input type="text" id="q_sent_env" data-answer="environment" placeholder="z. B. environment" autocomplete="off" autocorrect="off" autocapitalize="none">
+        <div class="feedback-msg" id="fb_q_sent_env"></div>
+      </div>
+
+      <div class="q-item">
+        <label class="q-label" for="q_sent_dice">3. Arbeitsanweisung: Was bedeutet <em>„Roll two dice.“</em>?</label>
+        <div class="choice-group cols-2" data-question="q_mc_dice" data-answer="Würfelt mit zwei Würfeln.">
+          <label class="choice-card">
+            <input type="radio" name="q_mc_dice" value="Würfelt mit zwei Würfeln.">
+            <span class="radio-indicator"></span>
+            <span>Würfelt mit zwei Würfeln.</span>
+          </label>
+          <label class="choice-card">
+            <input type="radio" name="q_mc_dice" value="Dreht euch zweimal um.">
+            <span class="radio-indicator"></span>
+            <span>Dreht euch zweimal um.</span>
+          </label>
+        </div>
+        <div class="feedback-msg" id="fb_q_mc_dice"></div>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- Sticky Actions -->
+  <div class="action-bar">
+    <button type="button" class="btn btn-primary" onclick="evaluateQuiz()">Test auswerten / Check Answers</button>
+    <button type="button" class="btn btn-secondary" onclick="resetQuiz()">Zurücksetzen / Reset</button>
+  </div>
+
+  <script>
+    // Card Selection Support
+    document.querySelectorAll('.choice-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const radio = this.querySelector('input[type="radio"]');
+        if (!radio) return;
+        radio.checked = true;
+        const name = radio.getAttribute('name');
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+          r.closest('.choice-card').classList.remove('selected');
+        });
+        this.classList.add('selected');
+      });
+    });
+
+    // Normalization logic
+    function normalize(str) {
+      if (!str) return '';
+      let s = str.trim().toLowerCase();
+      // Remove accents
+      s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      // Replace punctuation except standard characters
+      s = s.replace(/[.,/#!$%^&*;:{}=\-_`~()?]/g, "");
+      s = s.replace(/[’`]/g, "'");
+      // Collapse spaces
+      s = s.replace(/\s+/g, " ").trim();
+      return s;
+    }
+
+    function checkAnswer(userVal, rule) {
+      const uNorm = normalize(userVal);
+      const possibleAnswers = rule.split('|').map(a => normalize(a));
+      return possibleAnswers.includes(uNorm);
+    }
+
+    function evaluateQuiz() {
+      let totalQuestions = 0;
+      let correctAnswers = 0;
+
+      // 1. Text Inputs
+      const textInputs = document.querySelectorAll('input[type="text"][data-answer]');
+      textInputs.forEach(input => {
+        totalQuestions++;
+        const expected = input.getAttribute('data-answer');
+        const userVal = input.value;
+        const fbEl = document.getElementById('fb_' + input.id);
+
+        if (checkAnswer(userVal, expected)) {
+          correctAnswers++;
+          input.classList.remove('is-incorrect');
+          input.classList.add('is-correct');
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-correct';
+            fbEl.textContent = '✓ Correct / Richtig!';
+          }
+        } else {
+          input.classList.remove('is-correct');
+          input.classList.add('is-incorrect');
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-incorrect';
+            const displayAns = expected.split('|')[0];
+            fbEl.textContent = '✗ Incorrect. Expected answer: "' + displayAns + '"';
+          }
+        }
+      });
+
+      // 2. Select Inputs
+      const selects = document.querySelectorAll('select[data-answer]');
+      selects.forEach(sel => {
+        totalQuestions++;
+        const expected = sel.getAttribute('data-answer');
+        const userVal = sel.value;
+        const fbEl = document.getElementById('fb_' + sel.id);
+
+        if (checkAnswer(userVal, expected)) {
+          correctAnswers++;
+          sel.classList.remove('is-incorrect');
+          sel.classList.add('is-correct');
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-correct';
+            fbEl.textContent = '✓ Correct / Richtig!';
+          }
+        } else {
+          sel.classList.remove('is-correct');
+          sel.classList.add('is-incorrect');
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-incorrect';
+            fbEl.textContent = '✗ Incorrect. Expected: "' + expected + '"';
+          }
+        }
+      });
+
+      // 3. Choice Groups (Multiple Choice)
+      const groups = document.querySelectorAll('.choice-group[data-question]');
+      groups.forEach(group => {
+        totalQuestions++;
+        const qName = group.getAttribute('data-question');
+        const expected = group.getAttribute('data-answer');
+        const fbEl = document.getElementById('fb_' + qName);
+        const selectedRadio = group.querySelector('input[type="radio"]:checked');
+
+        const cards = group.querySelectorAll('.choice-card');
+        cards.forEach(c => c.classList.remove('is-correct', 'is-incorrect'));
+
+        if (selectedRadio && checkAnswer(selectedRadio.value, expected)) {
+          correctAnswers++;
+          if (selectedRadio.closest('.choice-card')) {
+            selectedRadio.closest('.choice-card').classList.add('is-correct');
+          }
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-correct';
+            fbEl.textContent = '✓ Correct / Richtig!';
+          }
+        } else {
+          if (selectedRadio && selectedRadio.closest('.choice-card')) {
+            selectedRadio.closest('.choice-card').classList.add('is-incorrect');
+          }
+          if (fbEl) {
+            fbEl.className = 'feedback-msg show-incorrect';
+            fbEl.textContent = '✗ Incorrect. Expected: "' + expected + '"';
+          }
+        }
+      });
+
+      // Score calculation
+      const scoreboard = document.getElementById('scoreboard');
+      const scoreValue = document.getElementById('scoreValue');
+      const scoreFeedback = document.getElementById('scoreFeedback');
+      const percent = Math.round((correctAnswers / totalQuestions) * 100);
+
+      scoreValue.textContent = `${correctAnswers} / ${totalQuestions} (${percent}%)`;
+
+      let feedback = '';
+      if (percent === 100) {
+        feedback = '🌟 Excellent! You got every question right!';
+      } else if (percent >= 80) {
+        feedback = '👏 Great job! Well done on your vocabulary mastery!';
+      } else if (percent >= 50) {
+        feedback = '👍 Good effort! Review the missed items and try again.';
+      } else {
+        feedback = '💡 Keep practicing! Review Unit 1 pages 176–177 and test yourself again.';
+      }
+      scoreFeedback.textContent = feedback;
+
+      scoreboard.classList.add('visible');
+      scoreboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetQuiz() {
+      // Clear text
+      document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.value = '';
+        input.classList.remove('is-correct', 'is-incorrect');
+      });
+
+      // Reset selects
+      document.querySelectorAll('select').forEach(sel => {
+        sel.selectedIndex = 0;
+        sel.classList.remove('is-correct', 'is-incorrect');
+      });
+
+      // Clear radios
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+      });
+      document.querySelectorAll('.choice-card').forEach(card => {
+        card.classList.remove('selected', 'is-correct', 'is-incorrect');
+      });
+
+      // Clear feedback messages
+      document.querySelectorAll('.feedback-msg').forEach(fb => {
+        fb.className = 'feedback-msg';
+        fb.textContent = '';
+      });
+
+      // Hide scoreboard
+      const scoreboard = document.getElementById('scoreboard');
+      scoreboard.classList.remove('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
