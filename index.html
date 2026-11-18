@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gymnasium Lernportal - Interaktive Klassenarbeits-Trainer</title>
+  <title>Gymnasium Lernportal - Modularer Klassenarbeits-Hub</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,1162 +16,704 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #f8fafc;
-      color: #1e293b;
+      color: #0f172a;
     }
-
-    /* 3D Flip Card animation */
-    .perspective {
-      perspective: 1200px;
-    }
-    .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: left;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-style: preserve-3d;
-    }
-    .flipped {
-      transform: rotateY(180deg);
-    }
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: 1.25rem;
-    }
-    .card-back {
-      transform: rotateY(180deg);
-    }
-
-    /* Custom styled scrollbar */
-    ::-webkit-scrollbar {
+    .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
-    ::-webkit-scrollbar-track {
+    .custom-scrollbar::-webkit-scrollbar-track {
       background: #f1f5f9;
     }
-    ::-webkit-scrollbar-thumb {
+    .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 4px;
     }
-    ::-webkit-scrollbar-thumb:hover {
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-600 selection:text-white">
 
-  <!-- ================= TOP NAVIGATION BAR ================= -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         
-        <!-- Logo & Brand -->
-        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="resetToHome()">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           </div>
           <div>
-            <span class="text-lg font-black tracking-tight text-slate-900 block leading-none">Gymnasium<span class="text-indigo-600">Hub</span></span>
-            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Klassenarbeits-Trainer</span>
+            <span class="text-lg font-black tracking-tight text-slate-900 block leading-tight">Gymnasium<span class="text-indigo-600">Hub</span></span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Modulare Test-Plattform</span>
           </div>
         </div>
 
-        <!-- Primary Navigation Links -->
-        <nav class="hidden md:flex items-center gap-1">
-          <button onclick="navigateTo('dashboard')" id="nav-btn-dashboard" class="px-3.5 py-2 rounded-lg text-sm font-semibold transition text-indigo-600 bg-indigo-50">
-            Übersicht
-          </button>
-          <button onclick="navigateTo('catalog')" id="nav-btn-catalog" class="px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
-            Alle Tests & Fächer
-          </button>
-          <button onclick="openModal('addTestModal')" class="px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Neuer Test
-          </button>
-          <button onclick="openModal('hostingModal')" class="px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Hosting-Anleitung
-          </button>
+        <!-- Center Level 1 Navigation (Klassenstufen) -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+          <button onclick="setLevel1Grade('all')" id="tab-grade-all" class="grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Alle Klassen</button>
+          <button onclick="setLevel1Grade('5')" id="tab-grade-5" class="grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Klasse 5</button>
+          <button onclick="setLevel1Grade('6')" id="tab-grade-6" class="grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-indigo-700 shadow-sm">Klasse 6 (Aktiv)</button>
+          <button onclick="setLevel1Grade('7')" id="tab-grade-7" class="grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Klasse 7</button>
+          <button onclick="setLevel1Grade('8')" id="tab-grade-8" class="grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Klasse 8</button>
         </nav>
 
-        <!-- Right Quick Actions -->
+        <!-- Right Action Buttons -->
         <div class="flex items-center gap-2">
-          <!-- Class Selector Pill -->
-          <div class="relative inline-block text-left">
-            <select id="globalClassSelect" onchange="onGlobalClassChange(this.value)" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 pl-3 pr-7 rounded-lg border-0 focus:ring-2 focus:ring-indigo-500 cursor-pointer appearance-none">
-              <option value="all">Alle Klassen</option>
-              <option value="5">Klasse 5</option>
-              <option value="6" selected>Klasse 6 (Gymnasium)</option>
-              <option value="7">Klasse 7</option>
-              <option value="8">Klasse 8</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </div>
-          </div>
+          <button onclick="openModal('addTestModal')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm shadow-indigo-600/30 flex items-center gap-1.5 transition active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span class="hidden sm:inline">Neuen Test registrieren</span>
+            <span class="sm:hidden">+ Test</span>
+          </button>
 
-          <!-- Mobile Menu Toggle Button -->
-          <button onclick="toggleMobileNav()" class="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+          <button onclick="openModal('archModal')" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200 transition" title="Code-Struktur & Architektur">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
           </button>
         </div>
 
       </div>
-    </div>
-
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
-      <button onclick="navigateTo('dashboard'); toggleMobileNav()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Übersicht</button>
-      <button onclick="navigateTo('catalog'); toggleMobileNav()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Alle Tests & Fächer</button>
-      <button onclick="openModal('addTestModal'); toggleMobileNav()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Neuer Test hinzufügen</button>
-      <button onclick="openModal('hostingModal'); toggleMobileNav()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Kostenloses Hosting (GitHub Pages)</button>
     </div>
   </header>
 
-
-  <!-- ================= MAIN VIEW WRAPPER ================= -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-    <!-- ----------------------------------------------------------------- -->
-    <!-- VIEW 1: DASHBOARD / LANDING PAGE                                 -->
-    <!-- ----------------------------------------------------------------- -->
-    <div id="view-dashboard" class="space-y-8">
-      
-      <!-- HERO BANNER -->
-      <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 sm:p-10 shadow-xl">
-        <div class="relative z-10 max-w-2xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-xs font-semibold mb-4 backdrop-blur-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Lehrplan Gymnasium 2026 Ready
-          </div>
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Gezielt üben für die nächste <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-indigo-200">Klassenarbeit</span>.
-          </h1>
-          <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-            Interaktive Karteikarten, gezielte Wissensüberprüfung und automatische Auswertung für Schüler der Gymnasialstufe in Baden-Württemberg und weiteren Bundesländern.
-          </p>
-          <div class="mt-6 flex flex-wrap gap-3">
-            <button onclick="startTestById('ethik-kl6-01')" class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-sm transition shadow-lg shadow-indigo-500/30 flex items-center gap-2">
-              <span>Jetzt Ethik Klasse 6 üben</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-            <button onclick="navigateTo('catalog')" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-sm transition">
-              Alle Fächer durchsuchen
-            </button>
-          </div>
+  <!-- ================= SUB-HEADER: MULTI-LEVEL DRILLDOWN ================= -->
+  <section class="bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Breadcrumb & Active Filters -->
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+          <span class="text-slate-400">Ebene 1:</span>
+          <span id="breadcrumbGrade" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold">Klasse 6</span>
+          <span class="text-slate-300">/</span>
+          <span class="text-slate-400">Ebene 2:</span>
+          <span id="breadcrumbSubject" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">Alle Fächer</span>
+          <span class="text-slate-300">/</span>
+          <span id="breadcrumbCount" class="text-slate-500">2 Tests bereit</span>
         </div>
 
-        <!-- Decorative background elements -->
-        <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute right-12 top-10 hidden lg:block opacity-20 pointer-events-none">
-          <svg class="w-72 h-72 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        </div>
-      </section>
-
-      <!-- KPI METRICS / QUICK STATS -->
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          </div>
-          <div>
-            <span class="text-xs font-semibold text-slate-400 uppercase">Aktive Tests</span>
-            <div id="statTotalTests" class="text-2xl font-black text-slate-800">6</div>
-          </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          </div>
-          <div>
-            <span class="text-xs font-semibold text-slate-400 uppercase">Fächer</span>
-            <div class="text-2xl font-black text-slate-800">5</div>
-          </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <div>
-            <span class="text-xs font-semibold text-slate-400 uppercase">Abgeschlossen</span>
-            <div id="statCompletedSessions" class="text-2xl font-black text-emerald-600">0</div>
-          </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </div>
-          <div>
-            <span class="text-xs font-semibold text-slate-400 uppercase">Erfolgsquote</span>
-            <div id="statSuccessRate" class="text-2xl font-black text-amber-600">--%</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FEATURED SPOTLIGHT: ETHIK KLASSE 6 -->
-      <section class="bg-white rounded-3xl border border-indigo-100 shadow-md p-6 sm:p-8">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="space-y-3">
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
-                Klassenarbeit am 23.11
-              </span>
-              <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700">
-                Klasse 6 Gymnasium
-              </span>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-900">
-              Ethik: Mythen vs. Wissenschaft, Urknall, Sokrates & Kant
-            </h2>
-            <p class="text-slate-600 text-sm max-w-2xl leading-relaxed">
-              Exakt nach dem Vorbereitungsblatt erstellt: 13 interaktive Prüfungsfragen zu Merkmalen von Mythen, Arbeitsweise von Naturwissenschaftlern, Grenzen des Urknalls, der Hebammenkunst des Sokrates und Kants Kategorischem Imperativ.
-            </p>
-            <div class="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 pt-1">
-              <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg> 13 Lernkarten</span>
-              <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> ca. 12 Minuten</span>
-              <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> Höchste Priorität</span>
-            </div>
-          </div>
-
-          <div class="flex sm:flex-col justify-end">
-            <button onclick="startTestById('ethik-kl6-01')" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base transition shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2">
-              <span>Jetzt starten</span>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SUBJECT CATEGORIES GRID -->
-      <section>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-slate-800">Fächer im Überblick</h3>
-          <button onclick="navigateTo('catalog')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
-            Alle Tests anzeigen &rarr;
-          </button>
-        </div>
-
-        <div id="subjectGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <!-- Dynamically populated by renderSubjectCards() -->
-        </div>
-      </section>
-
-    </div>
-
-
-    <!-- ----------------------------------------------------------------- -->
-    <!-- VIEW 2: FULL CATALOG / MULTI-LEVEL FILTER                         -->
-    <!-- ----------------------------------------------------------------- -->
-    <div id="view-catalog" class="hidden space-y-6">
-      
-      <!-- Filter & Search Controls Header -->
-      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-slate-900">Katalog der Klassenarbeits-Trainer</h2>
-            <p class="text-xs text-slate-500">Wähle Klasse, Fach oder filtere direkt nach dem Thema der Arbeit.</p>
-          </div>
-          
-          <!-- Search box -->
-          <div class="relative w-full md:w-72">
-            <input type="text" id="searchInput" oninput="applyCatalogFilters()" placeholder="Thema oder Fach suchen..." class="w-full pl-9 pr-4 py-2 rounded-xl text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          </div>
-        </div>
-
-        <!-- Filter Pills Bar -->
-        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-          <span class="text-xs font-bold text-slate-400 uppercase mr-1">Fach:</span>
-          <button onclick="filterBySubject('all')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white" data-subject="all">Alle</button>
-          <button onclick="filterBySubject('Ethik')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-subject="Ethik">Ethik</button>
-          <button onclick="filterBySubject('Mathematik')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-subject="Mathematik">Mathematik</button>
-          <button onclick="filterBySubject('Deutsch')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-subject="Deutsch">Deutsch</button>
-          <button onclick="filterBySubject('Geschichte')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-subject="Geschichte">Geschichte</button>
-          <button onclick="filterBySubject('Biologie')" class="subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-subject="Biologie">Biologie</button>
+        <!-- Search Bar -->
+        <div class="relative w-full sm:w-64">
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Thema oder Fach suchen..." class="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
       </div>
 
-      <!-- Tests Results List Grid -->
-      <div id="catalogList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Rendered via JS -->
+      <!-- Subject Filter Pills (Level 2) -->
+      <div class="flex items-center gap-2 overflow-x-auto pt-3 pb-1 custom-scrollbar text-xs">
+        <span class="font-bold text-slate-400 uppercase text-[11px] mr-1">Fächer:</span>
+        <button onclick="setLevel2Subject('all')" class="subject-pill px-3 py-1 rounded-full font-bold bg-indigo-600 text-white whitespace-nowrap transition" data-subject="all">Alle Fächer</button>
+        <button onclick="setLevel2Subject('Ethik')" class="subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition" data-subject="Ethik">⚖️ Ethik</button>
+        <button onclick="setLevel2Subject('Englisch')" class="subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition" data-subject="Englisch">🇬🇧 Englisch</button>
+        <button onclick="setLevel2Subject('Mathematik')" class="subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition" data-subject="Mathematik">📐 Mathematik</button>
+        <button onclick="setLevel2Subject('Biologie')" class="subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition" data-subject="Biologie">🔬 Biologie</button>
+        <button onclick="setLevel2Subject('Deutsch')" class="subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition" data-subject="Deutsch">📖 Deutsch</button>
       </div>
     </div>
+  </section>
 
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-    <!-- ----------------------------------------------------------------- -->
-    <!-- VIEW 3: ACTIVE TEST PRACTICE (FLASHCARD RUNNER)                   -->
-    <!-- ----------------------------------------------------------------- -->
-    <div id="view-runner" class="hidden max-w-3xl mx-auto space-y-4">
-      
-      <!-- Runner Header -->
-      <div class="flex items-center justify-between bg-white px-4 py-3 rounded-2xl border border-slate-200 shadow-sm">
-        <button onclick="navigateTo('dashboard')" class="text-xs font-bold text-slate-500 hover:text-indigo-600 flex items-center gap-1.5 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-          Zurück zur Übersicht
-        </button>
-
-        <span id="activeTestTitleBadge" class="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">
-          Ethik Klasse 6
-        </span>
-
-        <button onclick="restartActiveTest(false)" title="Test neu starten" class="text-xs font-semibold text-slate-500 hover:text-rose-600 transition flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          Neu starten
-        </button>
-      </div>
-
-      <!-- Progress Section -->
-      <div id="runnerProgressSection" class="px-1">
-        <div class="flex justify-between items-center text-xs font-semibold text-slate-500 mb-1.5">
-          <span id="runnerCardCounter">Karte 1 von 13</span>
-          <div class="flex items-center gap-3">
-            <span class="text-emerald-600 font-bold flex items-center gap-1">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              Gewusst: <span id="runnerStatKnown">0</span>
-            </span>
-            <span class="text-amber-600 font-bold flex items-center gap-1">
-              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-              Üben: <span id="runnerStatUnsure">0</span>
-            </span>
-          </div>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden shadow-inner">
-          <div id="runnerProgressBar" class="bg-gradient-to-r from-indigo-500 to-emerald-500 h-full rounded-full transition-all duration-300 w-0"></div>
+    <!-- KPI Metrics Strip -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">📂</div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Registrierte Tests</span>
+          <span id="metricTotalTests" class="text-xl font-black text-slate-800">2</span>
         </div>
       </div>
 
-      <!-- Interactive 3D Card Area -->
-      <div id="runnerCardContainer" class="perspective w-full h-[380px] sm:h-[430px]">
-        <div id="runnerCard" class="card-inner cursor-pointer" onclick="flipRunnerCard()">
-          
-          <!-- FRONT FACE -->
-          <div class="card-front bg-white p-6 sm:p-8 flex flex-col justify-between border-2 border-slate-200/90 shadow-xl hover:border-indigo-300 transition-colors">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span id="runnerTopicTagFront" class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">
-                  Thema
-                </span>
-                <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
-                  Klicken zum Umdrehen
-                </span>
-              </div>
-              <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Aufgabe / Frage:</p>
-              <h2 id="runnerQuestionText" class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
-                Fragetext lädt...
-              </h2>
-            </div>
-
-            <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>💡 Formuliere die Antwort zuerst gedanklich</span>
-              <span class="font-semibold text-indigo-600 flex items-center gap-1">
-                Lösung zeigen &rarr;
-              </span>
-            </div>
-          </div>
-
-          <!-- BACK FACE -->
-          <div class="card-back bg-gradient-to-b from-white to-slate-50 p-6 sm:p-8 flex flex-col justify-between border-2 border-indigo-200 shadow-xl">
-            <div class="overflow-y-auto pr-1 flex-1 mb-3">
-              <div class="flex items-center justify-between mb-2">
-                <span id="runnerTopicTagBack" class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full">
-                  Musterlösung
-                </span>
-                <span class="text-xs text-slate-400 font-medium">Lösung & Erklärung</span>
-              </div>
-              <h3 id="runnerAnswerTitle" class="text-base font-semibold text-slate-800 mb-2.5"></h3>
-              <div id="runnerAnswerContent" class="space-y-2 text-sm text-slate-700">
-                <!-- Injected bullets -->
-              </div>
-            </div>
-
-            <!-- Self evaluation button bar -->
-            <div class="pt-3 border-t border-slate-200" onclick="event.stopPropagation()">
-              <p class="text-center text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                Wie sicher warst du dir bei dieser Frage?
-              </p>
-              <div class="grid grid-cols-2 gap-3">
-                <button onclick="recordRunnerAnswer(false)" class="py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-800 font-bold text-sm transition active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-sm">
-                  <span>🤔</span>
-                  <span>Noch unsicher</span>
-                </button>
-                <button onclick="recordRunnerAnswer(true)" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20">
-                  <span>✅</span>
-                  <span>Sicher gewusst!</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold text-lg">🎓</div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Klassenstufe</span>
+          <span id="metricGradeDisplay" class="text-xl font-black text-slate-800">Klasse 6</span>
         </div>
       </div>
 
-      <!-- Navigation & Skip buttons -->
-      <div id="runnerControlsRow" class="flex justify-between items-center px-1">
-        <button id="runnerPrevBtn" onclick="prevRunnerCard()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 py-1.5 px-3 rounded-lg hover:bg-slate-200/60 transition">
-          &larr; Vorherige Karte
-        </button>
-        <span class="text-xs text-slate-400 hidden sm:inline">Tastatur: Leertaste = Drehen | 1 = Unsicher | 2 = Gewusst</span>
-        <button onclick="skipRunnerCard()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 py-1.5 px-3 rounded-lg hover:bg-slate-200/60 transition">
-          Überspringen &rarr;
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">⚡</div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Format</span>
+          <span class="text-sm font-black text-emerald-600">HTML Micro-Apps</span>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">💾</div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Speicher</span>
+          <button onclick="exportTestsJSON()" class="text-xs font-bold text-amber-700 hover:underline">JSON Exportieren</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEST CATALOG LIST GRID -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-lg font-black text-slate-900" id="catalogHeading">Verfügbare Klassenarbeits-Trainer</h2>
+          <p class="text-xs text-slate-500">Jeder Test läuft isoliert als eigenständige interaktive Einheit.</p>
+        </div>
+
+        <button onclick="openModal('addTestModal')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+          + Neuen Pfad registrieren
         </button>
       </div>
 
-      <!-- SUMMARY SCREEN (Shown at end of test) -->
-      <section id="runnerSummary" class="hidden bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
-        <div class="text-center">
-          <div id="summaryBadgeIcon" class="inline-flex p-3 rounded-2xl bg-indigo-50 text-3xl mb-2">🏆</div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="summaryHeadline">Klasse gemacht!</h2>
-          <p class="text-sm text-slate-500 mt-1" id="summarySubline">Du hast diesen Testdurchlauf vollständig absolviert.</p>
-        </div>
-
-        <!-- Metric grid -->
-        <div class="grid grid-cols-3 gap-3">
-          <div class="bg-slate-50 p-4 rounded-2xl text-center border border-slate-100">
-            <span class="text-xs font-semibold text-slate-400 uppercase">Karten</span>
-            <p id="sumCountTotal" class="text-2xl font-black text-slate-800 mt-0.5">0</p>
-          </div>
-          <div class="bg-emerald-50 p-4 rounded-2xl text-center border border-emerald-100">
-            <span class="text-xs font-semibold text-emerald-600 uppercase">Gewusst</span>
-            <p id="sumCountKnown" class="text-2xl font-black text-emerald-600 mt-0.5">0</p>
-          </div>
-          <div class="bg-amber-50 p-4 rounded-2xl text-center border border-amber-100">
-            <span class="text-xs font-semibold text-amber-600 uppercase">Wiederholen</span>
-            <p id="sumCountUnsure" class="text-2xl font-black text-amber-600 mt-0.5">0</p>
-          </div>
-        </div>
-
-        <!-- List of topics to revise -->
-        <div id="summaryReviewBox" class="space-y-2">
-          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Themen, die du dir vor der Arbeit nochmals ansehen solltest:</h4>
-          <div id="summaryReviewList" class="max-h-48 overflow-y-auto space-y-2 pr-1">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- End actions -->
-        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-          <button id="summaryRepeatUnsureBtn" onclick="restartActiveTest(true)" class="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm transition shadow-md shadow-amber-500/20 text-center">
-            🔁 Nur unsichere Karten wiederholen
-          </button>
-          <button onclick="restartActiveTest(false)" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-md shadow-indigo-600/20 text-center">
-            ✨ Kompletten Test wiederholen
-          </button>
-          <button onclick="navigateTo('dashboard')" class="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition text-center">
-            Zurück zur Übersicht
-          </button>
-        </div>
-      </section>
-
-    </div>
+      <div id="testGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
 
   </main>
 
+  <!-- ================= IN-APP TEST RUNNER VIEWPORT MODAL ================= -->
+  <div id="runnerModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex flex-col p-2 sm:p-4">
+    <!-- Runner Bar -->
+    <div class="bg-slate-900 border border-slate-800 rounded-t-2xl px-4 py-3 flex items-center justify-between text-white shadow-xl">
+      <div class="flex items-center gap-3">
+        <button onclick="closeTestRunner()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Zurück zum Portal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </button>
+        <div>
+          <h3 id="runnerTitle" class="text-sm font-bold truncate max-w-xs sm:max-w-md">Klassenarbeit</h3>
+          <span id="runnerSubtitle" class="text-[11px] text-slate-400 font-mono">./tests/...</span>
+        </div>
+      </div>
 
-  <!-- ================= MODAL 1: HOW TO ADD A NEW TEST ================= -->
-  <div id="addTestModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center gap-2">
+        <button onclick="reloadRunnerFrame()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Test neu laden">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+        <button onclick="toggleFullscreen()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Vollbild">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        </button>
+        <button onclick="closeTestRunner()" class="p-1.5 rounded-lg bg-rose-600/80 hover:bg-rose-600 text-white transition" title="Schließen">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Iframe Container -->
+    <div class="flex-1 bg-white rounded-b-2xl overflow-hidden border-x border-b border-slate-800 shadow-2xl relative">
+      <iframe id="testIframe" class="w-full h-full border-0" sandbox="allow-scripts allow-forms allow-same-origin allow-modals"></iframe>
+    </div>
+  </div>
+
+  <!-- ================= FORM MODAL: NEUEN TEST REGISTRIEREN ================= -->
+  <div id="addTestModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <span>🛠️</span> Wie füge ich neue Tests hinzu?
-        </h3>
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span>✨</span> Neuen Test registrieren
+          </h3>
+          <p class="text-xs text-slate-500">Trage hier die Metadaten und den Pfad zur HTML-Testdatei ein.</p>
+        </div>
         <button onclick="closeModal('addTestModal')" class="text-slate-400 hover:text-slate-600 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="text-sm text-slate-600 space-y-3">
-        <p>
-          Das System ist so aufgebaut, dass du <strong>ohne Programmierkenntnisse</strong> einfach ein neues Test-Objekt in das JavaScript-Array <code class="bg-slate-100 px-1.5 py-0.5 rounded text-indigo-600 font-mono text-xs">ALL_TESTS</code> eintragen kannst.
-        </p>
+      <form id="newTestForm" onsubmit="handleNewTestSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Titel der Klassenarbeit / Übung</label>
+          <input type="text" id="formTitle" required placeholder="z. B. Englisch: Simple Past vs. Present Perfect" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 text-xs">
+        </div>
 
-        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Beispiel-Struktur für einen neuen Test:</h4>
-        <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs overflow-x-auto font-mono leading-relaxed">{
-  id: "mathe-kl6-01",
-  title: "Bruchrechnen Grundlagen",
-  subject: "Mathematik",
-  grade: 6,
-  description: "Erweitern, Kürzen, ungleichnamige Brüche addieren.",
-  cards: [
-    {
-      id: 1,
-      topic: "Bruch erweitern",
-      question: "Was bedeutet es, einen Bruch mit der Zahl 3 zu erweitern?",
-      answerTitle: "Zähler und Nenner multiplizieren:",
-      bullets: [
-        "Man multipliziert sowohl den Zähler als auch den Nenner mit 3.",
-        "Der Wert des Bruchs ändert sich dabei nicht (z.B. 1/2 = 3/6)."
-      ]
-    }
-  ]
-}</pre>
-        <p class="text-xs text-slate-500">
-          Sobald dieser Block im Code eingefügt wird, erscheint der Test automatisch im Dashboard, im Filtermenü und in der Klassenstatistik!
-        </p>
-      </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Klassenstufe</label>
+            <select id="formGrade" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 text-xs">
+              <option value="5">Klasse 5</option>
+              <option value="6" selected>Klasse 6 (Gymnasium)</option>
+              <option value="7">Klasse 7</option>
+              <option value="8">Klasse 8</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Schulfach</label>
+            <select id="formSubject" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 text-xs">
+              <option value="Ethik">Ethik</option>
+              <option value="Englisch">Englisch</option>
+              <option value="Mathematik">Mathematik</option>
+              <option value="Biologie">Biologie</option>
+              <option value="Deutsch">Deutsch</option>
+              <option value="Geschichte">Geschichte</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="pt-3 border-t border-slate-100 flex justify-end">
-        <button onclick="closeModal('addTestModal')" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700">Verstanden</button>
-      </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Test-Typ</label>
+            <select id="formType" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs">
+              <option value="Lernkartei">Lernkartei (3D)</option>
+              <option value="Quiz">Multiple Choice</option>
+              <option value="Lückentext">Lückentext</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Fragenanzahl</label>
+            <input type="number" id="formQuestions" required value="10" min="1" max="100" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Dauer (Min)</label>
+            <input type="number" id="formDuration" required value="15" min="1" max="120" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Relativer Pfad oder öffentliche Web-URL</label>
+          <input type="text" id="formPath" required placeholder="./tests/klasse6/englisch-unit2.html oder https://..." class="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs">
+          <p class="text-[10px] text-slate-400 mt-1">Legst du die HTML-Datei lokal in dein GitHub-Repo, lautet der Pfad z. B. <code class="text-indigo-600">./tests/klasse6/dein-test.html</code>.</p>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Prüfungsdatum / Tag (optional)</label>
+          <input type="text" id="formTag" placeholder="z. B. Arbeit am 23.11 oder Unit 2 Vokabeln" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kurzbeschreibung</label>
+          <textarea id="formDescription" rows="2" placeholder="Themenübersicht, Schwerpunkte, behandelte Seiten..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('addTestModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Abbrechen</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-md shadow-indigo-600/20">Test speichern</button>
+        </div>
+      </form>
     </div>
   </div>
 
-
-  <!-- ================= MODAL 2: FREE HOSTING GUIDE ================= -->
-  <div id="hostingModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+  <!-- ================= MODAL: ARCHITEKTUR & CODE-STRUKTUR ================= -->
+  <div id="archModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <span>🚀</span> Wie hoste ich diese Webseite 100% kostenlos?
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <span>🏛️</span> Entkoppelte Portal-Architektur
         </h3>
-        <button onclick="closeModal('hostingModal')" class="text-slate-400 hover:text-slate-600 p-1">
+        <button onclick="closeModal('archModal')" class="text-slate-400 hover:text-slate-600 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="text-sm text-slate-600 space-y-4">
-        <p>Da diese gesamte Anwendung als statische Web-App (HTML/CSS/JS) konzipiert ist, benötigst du <strong>weder Server noch monatliche Kosten</strong>.</p>
-        
-        <div class="space-y-3">
-          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <h5 class="font-bold text-slate-800 text-xs uppercase mb-1">Option 1: GitHub Pages (Empfohlen, Dauerhaft kostenlos)</h5>
-            <ol class="list-decimal list-inside text-xs space-y-1 text-slate-600">
-              <li>Erstelle ein kostenloses Konto auf <a href="https://github.com" target="_blank" class="text-indigo-600 underline">github.com</a>.</li>
-              <li>Erstelle ein neues Repository (z. B. <code class="font-mono text-slate-700">gymnasium-uebung</code>).</li>
-              <li>Lade diese Datei als <code class="font-mono text-slate-700">index.html</code> hoch.</li>
-              <li>Gehe auf <strong>Settings &rarr; Pages</strong> und wähle den Branch <code class="font-mono text-slate-700">main</code>.</li>
-              <li>In unter einer Minute ist deine Seite weltweit unter <code class="font-mono text-slate-700">https://dein-name.github.io/gymnasium-uebung</code> erreichbar!</li>
-            </ol>
-          </div>
+      <div class="text-xs text-slate-600 space-y-3 leading-relaxed">
+        <p>Um die Website sauber erweiterbar zu halten, sind das <strong>Portal (Verwaltung & Dashboard)</strong> und die <strong>Tests (Fachlogik)</strong> komplett voneinander getrennt:</p>
 
-          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <h5 class="font-bold text-slate-800 text-xs uppercase mb-1">Option 2: Netlify Drop / Vercel (Per Drag & Drop)</h5>
-            <p class="text-xs text-slate-600">
-              Gehe auf <a href="https://app.netlify.com/drop" target="_blank" class="text-indigo-600 underline">netlify.com/drop</a>, ziehe den Ordner mit dieser Datei hinein und du erhältst sofort eine sichere HTTPS-URL.
-            </p>
-          </div>
+        <div class="p-3 bg-slate-900 text-slate-200 rounded-xl font-mono text-[11px] leading-relaxed">
+          gymnasium-hub/<br>
+          ├── index.html &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400"># Hauptportal (Dashboard, Filter, Iframe-Runner)</span><br>
+          ├── data/<br>
+          │ &nbsp; └── tests.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400"># Alle Metadaten der Tests</span><br>
+          ├── tests/<br>
+          │ &nbsp; ├── klasse6/<br>
+          │ &nbsp; │ &nbsp; ├── ethik-mythen-kant.html &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-emerald-400"># Unabhängiger Ethik-Test</span><br>
+          │ &nbsp; │ &nbsp; └── englisch-unit2-past.html &nbsp;&nbsp;<span class="text-emerald-400"># Unabhängiger Englisch-Test</span><br>
+          │ &nbsp; └── klasse7/<br>
+          │ &nbsp; &nbsp; &nbsp; └── mathe-geometrie.html<br>
         </div>
+
+        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider pt-2">Vorteile dieser Trennung:</h4>
+        <ul class="list-disc list-inside space-y-1 text-slate-600">
+          <li><strong>Kein Konflikt:</strong> Jeder Test kann eigene JavaScript-Skripte, CSS und Styles verwenden, ohne das Portal zu beeinflussen.</li>
+          <li><strong>Leichtes Hochladen:</strong> Einfach neue HTML-Dateien im Ordner <code class="font-mono text-indigo-600">tests/klasseX/</code> ablegen und über das Formular registrieren.</li>
+          <li><strong>100% Kostenlos:</strong> Funktioniert sofort auf GitHub Pages oder Netlify.</li>
+        </ul>
       </div>
 
       <div class="pt-3 border-t border-slate-100 flex justify-end">
-        <button onclick="closeModal('hostingModal')" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700">Schließen</button>
+        <button onclick="closeModal('archModal')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700">Schließen</button>
       </div>
     </div>
   </div>
 
-
-  <!-- ================= APPLICATION LOGIC & DATA ================= -->
+  <!-- ================= JAVASCRIPT REGISTRY & LOGIC ================= -->
   <script>
-    // --- 1. EXTENSIBLE DATABASE OF TESTS ---
-    const ALL_TESTS = [
+    // --- 1. DEFAULT TESTS REGISTRY (DATA-DECOUPLED) ---
+    // Embedded HTML modules for out-of-the-box instant execution in standalone iframe
+    const TEST_HTML_ETHIK = `<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+<style>
+.perspective{perspective:1000px}.inner{transition:transform .5s;transform-style:preserve-3d;position:relative;width:100%;height:100%}
+.flipped{transform:rotateY(180deg)}.front,.back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:1rem}
+.back{transform:rotateY(180deg)}
+</style></head>
+<body class="bg-slate-100 p-4 font-sans text-slate-800 flex flex-col items-center min-h-screen">
+  <div class="max-w-xl w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4 flex justify-between items-center">
+    <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">Ethik Klasse 6</span>
+    <span id="counter" class="text-xs font-semibold text-slate-500">1 / 5</span>
+  </div>
+  <div class="perspective w-full max-w-xl h-80 cursor-pointer" onclick="flipCard()">
+    <div id="card" class="inner">
+      <div class="front bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-md flex flex-col justify-between">
+        <div>
+          <span id="topic" class="text-xs font-bold text-indigo-600 uppercase">Mythen</span>
+          <h2 id="question" class="text-lg font-bold mt-2">Frage lädt...</h2>
+        </div>
+        <span class="text-xs text-indigo-600 font-bold self-end">Klicken zum Wenden &rarr;</span>
+      </div>
+      <div class="back bg-indigo-950 text-white p-6 rounded-2xl shadow-md flex flex-col justify-between">
+        <div class="overflow-y-auto">
+          <span class="text-xs font-bold text-emerald-400 uppercase">Musterlösung</span>
+          <p id="answer" class="text-sm mt-2 leading-relaxed text-slate-200">Antwort...</p>
+        </div>
+        <div class="flex gap-2 pt-2 border-t border-slate-700" onclick="event.stopPropagation()">
+          <button onclick="nextCard(false)" class="flex-1 py-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold">Noch unsicher</button>
+          <button onclick="nextCard(true)" class="flex-1 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md">Gewusst!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const cards = [
+      { t: "Mythen vs. Wissenschaft", q: "Was sind 3 typische Merkmale eines Mythos?", a: "1. Übernatürliche Mächte (Götter, Riesen, Geister).\\n2. Personifizierung von Naturgesetzen (z.B. Thor erzeugt Donner).\\n3. Basiert auf Glauben & Tradition ohne Pflicht zum Experiment." },
+      { t: "Naturwissenschaft", q: "Wie arbeiten Naturwissenschaftler nach dem Forscherkreislauf?", a: "1. Phänomen beobachten.\\n2. Prüfbare Hypothese formulieren.\\n3. Experimente & Messungen durchführen.\\n4. Theorie ableiten, die von anderen Forschern widerlegbar (falsifizierbar) sein muss." },
+      { t: "Urknall", q: "Welche Erklärungsgrenzen hat die Urknalltheorie?", a: "1. Das 'Davor' (Raum & Zeit begannen erst mit dem Urknall).\\n2. Warum explodierte die Singularität aus dem Nichts?\\n3. Naturwissenschaft beschreibt die Expansion, beantwortet aber keine Sinnfragen." },
+      { t: "Sokrates", q: "Was meinte Sokrates mit der Hebammenkunst (Mäeutik)?", a: "Er gab keine vorgefertigten Antworten. Durch geschicktes Nachfragen half er den Bürgern, die Wahrheit selbst 'zur Welt zu bringen' – wie eine Hebamme bei einer Geburt." },
+      { t: "Immanuel Kant", q: "Was ist der Kategorische Imperativ?", a: "'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde.' Vor jeder Tat fragt man: Wäre es gut, wenn jeder Mensch immer so handeln würde?" }
+    ];
+    let idx = 0;
+    function render() {
+      if(idx >= cards.length) {
+        document.body.innerHTML = '<div class="text-center bg-white p-8 rounded-3xl shadow-md border max-w-sm mt-12"><div class="text-4xl mb-2">🎉</div><h2 class="text-lg font-bold">Durchlauf abgeschlossen!</h2><p class="text-xs text-slate-500 mt-1">Du hast alle Fragen für die Klassenarbeit wiederholt.</p><button onclick="location.reload()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Nochmal</button></div>';
+        return;
+      }
+      document.getElementById('card').classList.remove('flipped');
+      document.getElementById('topic').textContent = cards[idx].t;
+      document.getElementById('question').textContent = cards[idx].q;
+      document.getElementById('answer').innerHTML = cards[idx].a.replace(/\\n/g, '<br>');
+      document.getElementById('counter').textContent = (idx+1) + " / " + cards.length;
+    }
+    function flipCard() { document.getElementById('card').classList.toggle('flipped'); }
+    function nextCard() { idx++; render(); }
+    render();
+  <\/script>
+</body></html>`;
+
+    const TEST_HTML_ENGLISCH = `<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script></head>
+<body class="bg-slate-100 p-4 font-sans text-slate-800 flex flex-col items-center min-h-screen">
+  <div class="max-w-xl w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4 flex justify-between items-center">
+    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Englisch Klasse 6</span>
+    <span id="quizScore" class="text-xs font-bold text-slate-500">Punkte: 0</span>
+  </div>
+  <div id="quizBox" class="w-full max-w-xl bg-white p-6 rounded-2xl border border-slate-200 shadow-md space-y-4">
+    <div class="flex items-center justify-between text-xs text-slate-400">
+      <span id="quizTopic" class="font-bold uppercase text-indigo-600">Grammar</span>
+      <span id="quizStep">Frage 1 von 4</span>
+    </div>
+    <h3 id="quizQuestion" class="text-base font-bold text-slate-900">Question...</h3>
+    <div id="quizOptions" class="space-y-2 pt-2"></div>
+    <div id="quizFeedback" class="hidden text-xs font-bold p-3 rounded-xl"></div>
+    <button id="quizNextBtn" onclick="nextQuestion()" class="hidden w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition">Nächste Frage &rarr;</button>
+  </div>
+  <script>
+    const questions = [
+      { t: "Tenses", q: "Which signal word requires the Simple Past?", opts: ["yesterday", "already", "never", "since 2024"], cor: 0, exp: "'Yesterday', 'last week', 'in 2020' demand Simple Past!" },
+      { t: "Irregular Verbs", q: "What is the Simple Past of 'buy'?", opts: ["buyed", "bought", "boughten", "bote"], cor: 1, exp: "buy &rarr; bought &rarr; bought" },
+      { t: "Present Perfect", q: "Complete: 'Look! She ___ her keys.'", opts: ["lost", "has lost", "is losing", "had lost"], cor: 1, exp: "Result in the present (keys missing now) &rarr; Present Perfect!" },
+      { t: "Vocabulary Unit 2", q: "Translate: 'to look forward to something'", opts: ["sich um etwas kümmern", "sich auf etwas freuen", "nach etwas suchen", "auf etwas herabsehen"], cor: 1, exp: "'look forward to' means 'sich auf etwas freuen'." }
+    ];
+    let cur = 0, score = 0;
+    function renderQ() {
+      if(cur >= questions.length) {
+        document.getElementById('quizBox').innerHTML = '<div class="text-center py-6"><div class="text-4xl mb-2">🏆</div><h3 class="text-lg font-bold">Klasse Leistung!</h3><p class="text-xs text-slate-500 mt-1">Du hast ' + score + ' von ' + questions.length + ' Fragen richtig gelöst.</p><button onclick="location.reload()" class="mt-4 px-5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Nochmals starten</button></div>';
+        return;
+      }
+      const item = questions[cur];
+      document.getElementById('quizTopic').textContent = item.t;
+      document.getElementById('quizStep').textContent = "Frage " + (cur+1) + " von " + questions.length;
+      document.getElementById('quizQuestion').textContent = item.q;
+      document.getElementById('quizFeedback').className = "hidden";
+      document.getElementById('quizNextBtn').classList.add('hidden');
+      const box = document.getElementById('quizOptions');
+      box.innerHTML = item.opts.map((opt, i) => 
+        '<button onclick="pick(' + i + ')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-xs font-medium transition flex items-center justify-between">' +
+          '<span>' + opt + '</span><span class="text-slate-300 text-[10px]">Wählen</span>' +
+        '</button>'
+      ).join('');
+    }
+    function pick(choice) {
+      const item = questions[cur];
+      const feed = document.getElementById('quizFeedback');
+      feed.classList.remove('hidden');
+      if(choice === item.cor) {
+        score++;
+        feed.className = "text-xs font-bold p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block";
+        feed.innerHTML = "✅ Richtig! " + item.exp;
+      } else {
+        feed.className = "text-xs font-bold p-3 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 block";
+        feed.innerHTML = "❌ Falsch. " + item.exp;
+      }
+      document.getElementById('quizScore').textContent = "Punkte: " + score;
+      document.querySelectorAll('#quizOptions button').forEach(b => b.disabled = true);
+      document.getElementById('quizNextBtn').classList.remove('hidden');
+    }
+    function nextQuestion() { cur++; renderQ(); }
+    renderQ();
+  <\/script>
+</body></html>`;
+
+    const DEFAULT_TESTS = [
       {
         id: "ethik-kl6-01",
-        title: "Ethik: Mythen, Urknall, Sokrates & Kant",
+        title: "Ethik: Mythen, Naturwissenschaft, Urknall, Sokrates & Kant",
         subject: "Ethik",
         grade: 6,
-        badge: "Klassenarbeit 23.11",
-        badgeColor: "rose",
-        description: "Typische Merkmale von Mythen, naturwissenschaftliche Methode, Grenzen der Urknall-Theorie sowie Sokrates und Kant.",
-        cards: [
-          {
-            id: 1,
-            topic: "Mythen",
-            question: "Was ist ein Mythos und welche typischen Merkmale hat er?",
-            answerTitle: "Merkmale eines Mythos:",
-            bullets: [
-              "<strong>Definition:</strong> Eine bildhafte, erzählte Geschichte zur Erklärung der Welt, von Naturereignissen oder des menschlichen Ursprungs.",
-              "<strong>Übernatürliches:</strong> Götter, Dämonen, Riesen oder Helden sind die Akteure.",
-              "<strong>Personifizierung:</strong> Naturkräfte werden vermenschlicht (z. B. Thor schleudert den Blitz).",
-              "<strong>Glaube & Tradition:</strong> Basiert auf Überlieferung und verlangt keine wissenschaftlichen Beweise."
-            ]
-          },
-          {
-            id: 2,
-            topic: "Mythos vs. Wissenschaft",
-            question: "Wie unterscheidet sich eine mythische Erzählung von einer wissenschaftlichen Aussage?",
-            answerTitle: "Wesentliche Unterschiede:",
-            bullets: [
-              "<strong>Mythos:</strong> Fragt nach dem <em>Sinn und 'Warum'</em> mit Hilfe von Fantasie und Göttern; kann nicht experimentell widerlegt werden.",
-              "<strong>Wissenschaft:</strong> Fragt nach dem <em>'Wie'</em> durch Naturgesetze, Daten und Experimente.",
-              "<strong>Widerlegbarkeit:</strong> Wissenschaftliche Erkenntnisse bleiben nur so lange gültig, bis das Gegenteil bewiesen wird."
-            ]
-          },
-          {
-            id: 3,
-            topic: "Wissenschaftliches Arbeiten",
-            question: "Wie arbeiten Naturwissenschaftler? Nenne die 5 typischen Schritte.",
-            answerTitle: "Der wissenschaftliche Forschungskreislauf:",
-            bullets: [
-              "<strong>1. Beobachten:</strong> Ein Phänomen in der Natur aufmerksam wahrnehmen.",
-              "<strong>2. Frage & Hypothese:</strong> Eine begründete Vermutung aufstellen.",
-              "<strong>3. Experiment & Messung:</strong> Versuche durchführen und genaue Daten festhalten.",
-              "<strong>4. Auswertung:</strong> Prüfen, ob die Hypothese gestützt oder widerlegt wird.",
-              "<strong>5. Wiederholbarkeit:</strong> Experimente müssen von anderen Forschern überall wiederholt werden können."
-            ]
-          },
-          {
-            id: 4,
-            topic: "Wissenschaften zuordnen",
-            question: "Welchen Fachgebieten ordnest du diese Fragen zu?\n• Warum fällt ein Apfel zu Boden?\n• Warum schlägt das Herz schneller beim Sport?\n• Warum rostet ein Fahrrad?",
-            answerTitle: "Richtige Zuordnung:",
-            bullets: [
-              "<strong>Physik:</strong> Schwerkraft / Gravitation und physikalische Kräfte.",
-              "<strong>Biologie:</strong> Lebewesen, Körperfunktionen, Organe und Kreislauf.",
-              "<strong>Chemie:</strong> Stoffumwandlung, Reaktion von Eisen mit Sauerstoff & Feuchtigkeit."
-            ]
-          },
-          {
-            id: 5,
-            topic: "Eigene Fragen formulieren",
-            question: "Formuliere zum Thema 'Der Wald' jeweils eine Frage für Biologie, Physik und Ethik.",
-            answerTitle: "Muster-Fragen zum Wald:",
-            bullets: [
-              "<strong>Biologie:</strong> Welche Tiere und Pflanzen leben in einer Lebensgemeinschaft zusammen?",
-              "<strong>Physik:</strong> Wie transportieren Kapillarkräfte das Grundwasser bis in die Baumkronen?",
-              "<strong>Ethik:</strong> Welche moralische Verantwortung tragen wir Menschen beim Schutz bedrohter Urwälder?"
-            ]
-          },
-          {
-            id: 6,
-            topic: "Der Urknall",
-            question: "Was besagt die Urknall-Theorie (Big Bang)?",
-            answerTitle: "Die Entstehung von Raum und Zeit:",
-            bullets: [
-              "Vor etwa <strong>13,8 Milliarden Jahren</strong> entstand unser Universum aus einem winzigen, unendlich dichten und extrem heißen Punkt (Singularität).",
-              "Raum, Zeit und Materie begannen mit dem Urknall und dehnen sich seither kontinuierlich aus."
-            ]
-          },
-          {
-            id: 7,
-            topic: "Urknall - Erklärungsgrenzen",
-            question: "Welche Erklärungsprobleme entstehen aus der Urknall-Theorie?",
-            answerTitle: "Die 3 großen Grenzen:",
-            bullets: [
-              "<strong>1. Das 'Davor':</strong> Was war vor dem Urknall? Da die Zeit erst mit ihm begann, stößt unser Denken hier an Grenzen.",
-              "<strong>2. Die Ursache:</strong> Warum explodierte dieser Punkt? Wie kann etwas aus dem Nichts entstehen?",
-              "<strong>3. Die Sinnfrage:</strong> Physik erklärt die Ausdehnung, beantwortet aber keine Sinnfragen des Lebens."
-            ]
-          },
-          {
-            id: 8,
-            topic: "Sokrates",
-            question: "Wer war Sokrates und wie unterrichtete er die Bürger in Athen?",
-            answerTitle: "Steckbrief Sokrates:",
-            bullets: [
-              "Antiker Philosoph im alten Griechenland (ca. 469–399 v. Chr.).",
-              "Hinterließ <strong>keine eigenen Schriften</strong> – sein Schüler Platon hielt seine Lehren fest.",
-              "Suchte auf dem Marktplatz (Agora) gezielt das Gespräch mit Menschen aller Schichten."
-            ]
-          },
-          {
-            id: 9,
-            topic: "Sokrates - Zitat",
-            question: "Was bedeutet der berühmte Spruch: 'Ich weiß, dass ich nichts weiß'?",
-            answerTitle: "Bedeutung des Zitats:",
-            bullets: [
-              "<strong>Selbsterkenntnis:</strong> Wahre Klugheit beginnt damit, die Begrenztheit des eigenen Wissens anzuerkennen.",
-              "<strong>Kritik an Scheingelehrten:</strong> Viele Menschen tun nur so, als wüssten sie alles. Sokrates deckte diese Einbildung auf.",
-              "<strong>Offenheit:</strong> Nur wer zugibt, etwas nicht zu wissen, ist bereit, unvoreingenommen weiter zu forschen."
-            ]
-          },
-          {
-            id: 10,
-            topic: "Sokrates - Methode",
-            question: "Was verstand Sokrates unter der Hebammenkunst (Mäeutik)?",
-            answerTitle: "Die Hebammenkunst (Mäeutik):",
-            bullets: [
-              "So wie eine Hebamme bei der Geburt eines Kindes hilft, half Sokrates seinen Mitmenschen, <strong>die Erkenntnis aus sich selbst heraus zu gebären</strong>.",
-              "Er gab keine vorgefertigten Antworten, sondern stellte gezielte Fragen, bis der Befragte die Wahrheit selbst entdeckte."
-            ]
-          },
-          {
-            id: 11,
-            topic: "Immanuel Kant",
-            question: "Wer war Immanuel Kant und wie lautete sein Leitspruch der Aufklärung?",
-            answerTitle: "Kant & die Aufklärung:",
-            bullets: [
-              "Bedeutender deutscher Philosoph der Aufklärung (1724–1804 aus Königsberg).",
-              "<strong>Leitspruch:</strong> <em>'Sapere aude!'</em> – 'Habe Mut, dich deines eigenen Verstandes zu bedienen!'.",
-              "Der Mensch soll selbständig und kritisch denken, statt anderen blind zu gehorchen."
-            ]
-          },
-          {
-            id: 12,
-            topic: "Kant - 4 Grundfragen",
-            question: "Welche vier berühmten Grundfragen der Philosophie formulierte Kant?",
-            answerTitle: "Kants 4 Grundfragen:",
-            bullets: [
-              "<strong>1. Was kann ich wissen?</strong> (Erkenntnis & Wissenschaft)",
-              "<strong>2. Was soll ich tun?</strong> (Ethik & Moral)",
-              "<strong>3. Was darf ich hoffen?</strong> (Glaube & Religion)",
-              "<strong>4. Was ist der Mensch?</strong> (Anthropologie – fasst alle 3 zusammen)"
-            ]
-          },
-          {
-            id: 13,
-            topic: "Kategorischer Imperativ",
-            question: "Was besagt der Kategorische Imperativ von Kant?",
-            answerTitle: "Die universelle Moralformel:",
-            bullets: [
-              "<em>'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde.'</em>",
-              "<strong>Einfaches Gedankenexperiment:</strong> Frage dich vor jeder Tat: <em>'Wäre es gut, wenn alle Menschen immer genau so handeln würden wie ich jetzt?'</em> (z. B. beim Lügen oder Betrügen)."
-            ]
-          }
-        ]
+        type: "Lernkartei",
+        duration: 15,
+        questionsCount: 13,
+        path: "./tests/klasse6/ethik-mythen-kant.html",
+        tag: "Arbeit am 23.11",
+        tagColor: "rose",
+        description: "Vorbereitung für die erste Klassenarbeit: Merkmale von Mythen, Arbeitsweise von Forschern, Grenzen des Urknalls, Hebammenkunst und Kants Imperativ.",
+        rawContent: TEST_HTML_ETHIK
       },
       {
-        id: "mathe-kl6-01",
-        title: "Mathematik: Bruchrechnen & Dezimalbrüche",
-        subject: "Mathematik",
+        id: "englisch-kl6-01",
+        title: "Englisch: Simple Past vs. Present Perfect & Unit 2 Vokabeln",
+        subject: "Englisch",
         grade: 6,
-        badge: "Basiswissen",
-        badgeColor: "indigo",
-        description: "Brüche erweitern, kürzen, Addition und Subtraktion mit Hauptnenner.",
-        cards: [
-          {
-            id: 1,
-            topic: "Erweitern & Kürzen",
-            question: "Wie kürzt man einen Bruch vollständig?",
-            answerTitle: "Bruch kürzen:",
-            bullets: [
-              "Man teilt Zähler und Nenner durch denselben gemeinsamen Teiler.",
-              "Vollständig gekürzt ist er, wenn Zähler und Nenner teilerfremd sind (außer der 1 keinen gemeinsamen Teiler mehr haben)."
-            ]
-          },
-          {
-            id: 2,
-            topic: "Ungleichnamige Brüche",
-            question: "Was muss man tun, bevor man Brüche wie 1/3 und 2/5 addieren darf?",
-            answerTitle: "Gleichnamig machen:",
-            bullets: [
-              "Man muss den kleinsten gemeinsamen Nenner (Hauptnenner) finden.",
-              "Hier ist das kleinste gemeinsame Vielfache von 3 und 5 die Zahl 15.",
-              "5/15 + 6/15 = 11/15."
-            ]
-          }
-        ]
-      },
-      {
-        id: "deutsch-kl6-01",
-        title: "Deutsch: Grammatik & Satzglieder",
-        subject: "Deutsch",
-        grade: 6,
-        badge: "Wichtig",
-        badgeColor: "emerald",
-        description: "Satzglieder bestimmen: Subjekt, Prädikat, Dativ- und Akkusativobjekt, Adverbiale Bestimmungen.",
-        cards: [
-          {
-            id: 1,
-            topic: "Objekte bestimmen",
-            question: "Mit welchen Kontrollfragen erfragt man Dativ- und Akkusativobjekt?",
-            answerTitle: "Fragewörter:",
-            bullets: [
-              "<strong>Dativobjekt:</strong> 'Wem oder was?' (3. Fall)",
-              "<strong>Akkusativobjekt:</strong> 'Wen oder was?' (4. Fall)"
-            ]
-          }
-        ]
-      },
-      {
-        id: "geschichte-kl6-01",
-        title: "Geschichte: Altes Ägypten & Pharaonen",
-        subject: "Geschichte",
-        grade: 6,
-        badge: "Epoche",
-        badgeColor: "amber",
-        description: "Der Nil als Lebensader Ägyptens, Gesellschaftspyramide und Totenkult.",
-        cards: [
-          {
-            id: 1,
-            topic: "Der Nil",
-            question: "Warum bezeichnete der Geschichtsschreiber Herodot Ägypten als 'Geschenk des Nils'?",
-            answerTitle: "Bedeutung des Nils:",
-            bullets: [
-              "Die jährliche Nilschwemme brachte fruchtbaren schwarzen Schlamm auf die Felder.",
-              "Ohne diesen Naturdünger wäre das Land eine lebensfeindliche Wüste geblieben."
-            ]
-          }
-        ]
-      },
-      {
-        id: "bio-kl6-01",
-        title: "Biologie: Wirbeltiere im Vergleich",
-        subject: "Biologie",
-        grade: 6,
-        badge: "Lehrplan",
-        badgeColor: "emerald",
-        description: "Die 5 Wirbeltierklassen: Säugetiere, Vögel, Reptilien, Amphibien, Fische.",
-        cards: [
-          {
-            id: 1,
-            topic: "Wirbeltierklassen",
-            question: "Welche gemeinsamen Grundmerkmale haben alle Wirbeltiere?",
-            answerTitle: "Grundmerkmale:",
-            bullets: [
-              "Eine innere Wirbelsäule als Stützachse.",
-              "Ein zentrales Nervensystem mit Gehirn und Rückenmark.",
-              "Ein geschlossener Blutkreislauf."
-            ]
-          }
-        ]
-      },
-      {
-        id: "ethik-kl7-01",
-        title: "Ethik: Freundschaft, Vorurteile & Toleranz",
-        subject: "Ethik",
-        grade: 7,
-        badge: "Klasse 7",
-        badgeColor: "slate",
-        description: "Wie entstehen Klischees und wie stärken wir das respektvolle Zusammenleben?",
-        cards: [
-          {
-            id: 1,
-            topic: "Toleranz",
-            question: "Was bedeutet der Begriff 'Toleranz' im philosophischen Sinn?",
-            answerTitle: "Toleranz:",
-            bullets: [
-              "Das bewusste Ertragen und Respektieren anderer Überzeugungen und Lebensweisen, solange sie niemandem schaden.",
-              "Sie ist die Grundlage für ein friedliches Miteinander in einer vielfältigen Gesellschaft."
-            ]
-          }
-        ]
+        type: "Quiz",
+        duration: 12,
+        questionsCount: 10,
+        path: "./tests/klasse6/englisch-unit2-grammar.html",
+        tag: "Klassenarbeit Vorbereitung",
+        tagColor: "emerald",
+        description: "Grammatik-Check: Signalwörter für Simple Past, unregelmäßige Verben der 6. Klasse und wichtige Phrasen aus Unit 2.",
+        rawContent: TEST_HTML_ENGLISCH
       }
     ];
 
-    // --- 2. GLOBAL STATE ---
-    let currentGradeFilter = "6";
-    let currentSubjectFilter = "all";
-    let activeTest = null;
-    let activeCardIndex = 0;
-    let isFlipped = false;
-    let knownCards = [];
-    let unsureCards = [];
-    let completedSessionsCount = 0;
-    let totalScoreSum = 0;
-
-    // --- 3. NAVIGATION CONTROLLER ---
-    function navigateTo(viewId) {
-      document.getElementById('view-dashboard').classList.add('hidden');
-      document.getElementById('view-catalog').classList.add('hidden');
-      document.getElementById('view-runner').classList.add('hidden');
-
-      // Update Top Nav button styling
-      const btnDash = document.getElementById('nav-btn-dashboard');
-      const btnCat = document.getElementById('nav-btn-catalog');
-      
-      btnDash.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition " + 
-        (viewId === 'dashboard' ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100');
-      btnCat.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition " + 
-        (viewId === 'catalog' ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100');
-
-      if (viewId === 'dashboard') {
-        document.getElementById('view-dashboard').classList.remove('hidden');
-        renderSubjectCards();
-      } else if (viewId === 'catalog') {
-        document.getElementById('view-catalog').classList.remove('hidden');
-        applyCatalogFilters();
-      } else if (viewId === 'runner') {
-        document.getElementById('view-runner').classList.remove('hidden');
+    // --- 2. LOCAL STORAGE REGISTRY HANDLER ---
+    function loadTestsRegistry() {
+      const stored = localStorage.getItem('gymnasium_tests_registry');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error("Failed to parse registry from localStorage, fallback to defaults.", e);
+        }
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return DEFAULT_TESTS;
     }
 
-    function toggleMobileNav() {
-      const menu = document.getElementById('mobileMenu');
-      menu.classList.toggle('hidden');
+    function saveTestsRegistry(list) {
+      localStorage.setItem('gymnasium_tests_registry', JSON.stringify(list));
     }
 
-    function onGlobalClassChange(grade) {
-      currentGradeFilter = grade;
-      renderSubjectCards();
-      applyCatalogFilters();
-      updateMetrics();
+    let testsRegistry = loadTestsRegistry();
+
+    // --- 3. FILTER STATE ---
+    let currentGrade = "6";
+    let currentSubject = "all";
+
+    function setLevel1Grade(grade) {
+      currentGrade = grade;
+      document.querySelectorAll('.grade-tab-btn').forEach(b => {
+        b.className = "grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900";
+      });
+      const activeBtn = document.getElementById(`tab-grade-${grade}`);
+      if (activeBtn) {
+        activeBtn.className = "grade-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-indigo-700 shadow-sm";
+      }
+      applyFilters();
     }
 
-    // --- 4. DASHBOARD & SUBJECT CARDS RENDERING ---
-    function renderSubjectCards() {
-      const grid = document.getElementById('subjectGrid');
-      const subjects = ["Ethik", "Mathematik", "Deutsch", "Geschichte", "Biologie"];
-      
-      const icons = {
-        "Ethik": "⚖️",
-        "Mathematik": "📐",
-        "Deutsch": "📖",
-        "Geschichte": "🏛️",
-        "Biologie": "🔬"
-      };
-
-      grid.innerHTML = subjects.map(sub => {
-        // filter by subject and current grade
-        const tests = ALL_TESTS.filter(t => 
-          t.subject === sub && (currentGradeFilter === 'all' || t.grade.toString() === currentGradeFilter)
-        );
-        const count = tests.length;
-
-        return `
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 hover:border-indigo-300 hover:shadow-md transition-all flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-2xl">${icons[sub] || '📚'}</span>
-                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${count > 0 ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-100 text-slate-400'}">
-                  ${count} ${count === 1 ? 'Test' : 'Tests'}
-                </span>
-              </div>
-              <h4 class="font-bold text-slate-900 text-lg">${sub}</h4>
-              <p class="text-xs text-slate-500 mt-1 line-clamp-2">
-                ${count > 0 ? tests.map(t => t.title.split(':')[1] || t.title).join(', ') : 'Weitere Tests werden in Kürze freigeschaltet.'}
-              </p>
-            </div>
-            
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-              <button onclick="quickFilterSubject('${sub}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                Öffnen &rarr;
-              </button>
-              ${sub === 'Ethik' ? '<span class="text-[11px] font-bold text-rose-600">Arbeit am 23.11</span>' : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function quickFilterSubject(subject) {
-      filterBySubject(subject);
-      navigateTo('catalog');
-    }
-
-    // --- 5. CATALOG VIEW & FILTERING ---
-    function filterBySubject(subject) {
-      currentSubjectFilter = subject;
-      document.querySelectorAll('.subject-filter-btn').forEach(btn => {
+    function setLevel2Subject(subject) {
+      currentSubject = subject;
+      document.querySelectorAll('.subject-pill').forEach(btn => {
         if (btn.getAttribute('data-subject') === subject) {
-          btn.className = "subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white";
+          btn.className = "subject-pill px-3 py-1 rounded-full font-bold bg-indigo-600 text-white whitespace-nowrap transition";
         } else {
-          btn.className = "subject-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200";
+          btn.className = "subject-pill px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition";
         }
       });
-      applyCatalogFilters();
+      applyFilters();
     }
 
-    function applyCatalogFilters() {
-      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-      const catalogList = document.getElementById('catalogList');
+    function resetToHome() {
+      setLevel1Grade('6');
+      setLevel2Subject('all');
+      document.getElementById('searchInput').value = '';
+    }
 
-      const filtered = ALL_TESTS.filter(t => {
-        const matchesGrade = currentGradeFilter === 'all' || t.grade.toString() === currentGradeFilter;
-        const matchesSubject = currentSubjectFilter === 'all' || t.subject === currentSubjectFilter;
-        const matchesSearch = !searchVal || 
-          t.title.toLowerCase().includes(searchVal) || 
+    function applyFilters() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      const filtered = testsRegistry.filter(t => {
+        const matchGrade = currentGrade === 'all' || t.grade.toString() === currentGrade;
+        const matchSubject = currentSubject === 'all' || t.subject === currentSubject;
+        const matchSearch = !searchVal || 
+          t.title.toLowerCase().includes(searchVal) ||
           t.description.toLowerCase().includes(searchVal) ||
-          t.subject.toLowerCase().includes(searchVal);
-        return matchesGrade && matchesSubject && matchesSearch;
+          t.subject.toLowerCase().includes(searchVal) ||
+          t.path.toLowerCase().includes(searchVal);
+        return matchGrade && matchSubject && matchSearch;
       });
 
-      if (filtered.length === 0) {
-        catalogList.innerHTML = `
-          <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
-            <span class="text-3xl block mb-2">🔍</span>
-            <p class="font-bold">Keine passenden Tests für diesen Filter gefunden.</p>
-            <p class="text-xs text-slate-400 mt-1">Versuche eine andere Klasse oder setze das Suchwort zurück.</p>
+      // Update breadcrumbs & indicators
+      document.getElementById('breadcrumbGrade').textContent = currentGrade === 'all' ? 'Alle Klassen' : `Klasse ${currentGrade}`;
+      document.getElementById('breadcrumbSubject').textContent = currentSubject === 'all' ? 'Alle Fächer' : currentSubject;
+      document.getElementById('breadcrumbCount').textContent = `${filtered.length} Test${filtered.length === 1 ? '' : 's'} bereit`;
+      document.getElementById('metricTotalTests').textContent = testsRegistry.length;
+      document.getElementById('metricGradeDisplay').textContent = currentGrade === 'all' ? 'Alle Klassen' : `Klasse ${currentGrade}`;
+
+      renderGrid(filtered);
+    }
+
+    function renderGrid(list) {
+      const grid = document.getElementById('testGrid');
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+            <span class="text-3xl block mb-2">📚</span>
+            <h4 class="font-bold text-slate-800 text-base">Noch kein Test für diesen Filter registriert</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Möchtest du einen neuen Test anlegen? Klicke einfach auf den Button unten, um den Pfad zur HTML-Datei hinzuzufügen.</p>
+            <button onclick="openModal('addTestModal')" class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition">
+              + Jetzt Test registrieren
+            </button>
           </div>
         `;
         return;
       }
 
-      catalogList.innerHTML = filtered.map(t => `
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm hover:border-indigo-400 hover:shadow-md transition flex flex-col justify-between">
+      grid.innerHTML = list.map(t => `
+        <div class="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm hover:shadow-md hover:border-indigo-400 transition-all flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">Klasse ${t.grade}</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded ${t.badgeColor === 'rose' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}">
-                ${t.badge || t.subject}
+            <!-- Top Badges -->
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${t.subject === 'Ethik' ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'}">
+                ${t.subject} • Kl. ${t.grade}
+              </span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${t.tagColor === 'rose' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}">
+                ${t.tag || t.type}
               </span>
             </div>
-            <h4 class="font-bold text-slate-900 text-base mb-1.5 leading-snug">${t.title}</h4>
-            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4">${t.description}</p>
+
+            <h3 class="font-extrabold text-slate-900 text-base leading-snug mb-2">${t.title}</h3>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">${t.description}</p>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs text-slate-400 font-medium">${t.cards.length} Lernkarten</span>
-            <button onclick="startTestById('${t.id}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1 shadow-sm">
-              <span>Jetzt Üben</span>
-              &rarr;
+          <div>
+            <!-- Metadata & Path snippet -->
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] space-y-1 mb-4">
+              <div class="flex justify-between text-slate-500 font-medium">
+                <span>⏱️ ca. ${t.duration} Min</span>
+                <span>❓ ${t.questionsCount} Aufgaben</span>
+                <span class="font-bold text-indigo-600">${t.type}</span>
+              </div>
+              <div class="text-[10px] text-slate-400 font-mono truncate" title="${t.path}">
+                🔗 ${t.path}
+              </div>
+            </div>
+
+            <!-- Launch trigger -->
+            <button onclick="launchTestRunner('${t.id}')" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/20 active:scale-98">
+              <span>Test starten</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
           </div>
         </div>
       `).join('');
     }
 
-    // --- 6. TEST RUNNER (FLASHCARD ENGINE) ---
-    function startTestById(testId) {
-      const found = ALL_TESTS.find(t => t.id === testId);
-      if (!found) return;
+    // --- 4. TEST RUNNER (IFRAME CONTROLLER) ---
+    let activeTestObject = null;
 
-      activeTest = JSON.parse(JSON.stringify(found)); // clone
-      activeCardIndex = 0;
-      knownCards = [];
-      unsureCards = [];
-      isFlipped = false;
+    function launchTestRunner(testId) {
+      const test = testsRegistry.find(t => t.id === testId);
+      if (!test) return;
 
-      document.getElementById('activeTestTitleBadge').textContent = `${activeTest.subject} (Klasse ${activeTest.grade})`;
+      activeTestObject = test;
+      document.getElementById('runnerTitle').textContent = `${test.title} (Klasse ${test.grade})`;
+      document.getElementById('runnerSubtitle').textContent = test.path;
+
+      const iframe = document.getElementById('testIframe');
       
-      // Reset view states
-      document.getElementById('runnerSummary').classList.add('hidden');
-      document.getElementById('runnerCardContainer').classList.remove('hidden');
-      document.getElementById('runnerProgressSection').classList.remove('hidden');
-      document.getElementById('runnerControlsRow').classList.remove('hidden');
-
-      navigateTo('runner');
-      renderRunnerCard();
-    }
-
-    function renderRunnerCard() {
-      if (!activeTest || activeCardIndex >= activeTest.cards.length) {
-        showRunnerSummary();
-        return;
-      }
-
-      const card = activeTest.cards[activeCardIndex];
-      const cardEl = document.getElementById('runnerCard');
-      isFlipped = false;
-      cardEl.classList.remove('flipped');
-
-      // Populate text elements
-      document.getElementById('runnerTopicTagFront').textContent = card.topic;
-      document.getElementById('runnerTopicTagBack').textContent = card.topic;
-      document.getElementById('runnerQuestionText').innerHTML = card.question.replace(/\n/g, '<br>');
-      document.getElementById('runnerAnswerTitle').textContent = card.answerTitle || "Lösung:";
-
-      // Render bullet list
-      const contentEl = document.getElementById('runnerAnswerContent');
-      contentEl.innerHTML = card.bullets.map(b => `
-        <div class="p-2 rounded-lg bg-white/80 border border-slate-100 flex items-start gap-2">
-          <span class="text-indigo-500 font-bold">•</span>
-          <div class="text-xs sm:text-sm leading-relaxed">${b}</div>
-        </div>
-      `).join('');
-
-      // Update counters
-      document.getElementById('runnerCardCounter').textContent = `Karte ${activeCardIndex + 1} von ${activeTest.cards.length}`;
-      const pct = (activeCardIndex / activeTest.cards.length) * 100;
-      document.getElementById('runnerProgressBar').style.width = `${pct}%`;
-
-      document.getElementById('runnerStatKnown').textContent = knownCards.length;
-      document.getElementById('runnerStatUnsure').textContent = unsureCards.length;
-
-      const prevBtn = document.getElementById('runnerPrevBtn');
-      prevBtn.disabled = activeCardIndex === 0;
-      prevBtn.style.opacity = activeCardIndex === 0 ? "0.3" : "1";
-    }
-
-    function flipRunnerCard() {
-      isFlipped = !isFlipped;
-      document.getElementById('runnerCard').classList.toggle('flipped', isFlipped);
-    }
-
-    function recordRunnerAnswer(knewIt) {
-      const current = activeTest.cards[activeCardIndex];
-      if (knewIt) {
-        if (!knownCards.some(c => c.id === current.id)) knownCards.push(current);
-        unsureCards = unsureCards.filter(c => c.id !== current.id);
+      // If test has embedded code (or local file fallback)
+      if (test.rawContent) {
+        iframe.srcdoc = test.rawContent;
       } else {
-        if (!unsureCards.some(c => c.id === current.id)) unsureCards.push(current);
-        knownCards = knownCards.filter(c => c.id !== current.id);
+        iframe.removeAttribute('srcdoc');
+        iframe.src = test.path;
       }
-      activeCardIndex++;
-      renderRunnerCard();
+
+      document.getElementById('runnerModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     }
 
-    function skipRunnerCard() {
-      activeCardIndex++;
-      renderRunnerCard();
+    function closeTestRunner() {
+      document.getElementById('runnerModal').classList.add('hidden');
+      document.getElementById('testIframe').src = 'about:blank';
+      document.body.style.overflow = 'auto';
     }
 
-    function prevRunnerCard() {
-      if (activeCardIndex > 0) {
-        activeCardIndex--;
-        renderRunnerCard();
+    function reloadRunnerFrame() {
+      if (activeTestObject) {
+        launchTestRunner(activeTestObject.id);
       }
     }
 
-    function showRunnerSummary() {
-      document.getElementById('runnerCardContainer').classList.add('hidden');
-      document.getElementById('runnerProgressSection').classList.add('hidden');
-      document.getElementById('runnerControlsRow').classList.add('hidden');
-      document.getElementById('runnerSummary').classList.remove('hidden');
-
-      const total = activeTest.cards.length;
-      const known = knownCards.length;
-      const unsure = unsureCards.length;
-
-      document.getElementById('sumCountTotal').textContent = total;
-      document.getElementById('sumCountKnown').textContent = known;
-      document.getElementById('sumCountUnsure').textContent = unsure;
-
-      // Update global user stats
-      completedSessionsCount++;
-      const sessionScore = total > 0 ? (known / total) * 100 : 0;
-      totalScoreSum += sessionScore;
-      updateMetrics();
-
-      const reviewBox = document.getElementById('summaryReviewBox');
-      const reviewList = document.getElementById('summaryReviewList');
-      const repeatUnsureBtn = document.getElementById('summaryRepeatUnsureBtn');
-
-      if (unsure.length > 0 || unsureCards.length > 0) {
-        repeatUnsureBtn.classList.remove('hidden');
-        reviewBox.classList.remove('hidden');
-        reviewList.innerHTML = unsureCards.map(c => `
-          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
-            <div>
-              <span class="font-bold text-indigo-600">[${c.topic}]</span>
-              <span class="text-slate-700 ml-1 font-medium">${c.question.split('\n')[0]}</span>
-            </div>
-            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[10px]">Wiederholen</span>
-          </div>
-        `).join('');
+    function toggleFullscreen() {
+      const modal = document.getElementById('runnerModal');
+      if (!document.fullscreenElement) {
+        modal.requestFullscreen().catch(() => {});
       } else {
-        repeatUnsureBtn.classList.add('hidden');
-        reviewBox.classList.add('hidden');
-        document.getElementById('summaryHeadline').textContent = "Perfekt vorbereitet! 🌟";
-        document.getElementById('summarySubline').textContent = "Alle Fragen dieser Lerneinheit wurden sicher gewusst.";
+        document.exitFullscreen().catch(() => {});
       }
     }
 
-    function restartActiveTest(onlyUnsure = false) {
-      if (onlyUnsure && unsureCards.length > 0) {
-        activeTest.cards = [...unsureCards];
-      } else {
-        const original = ALL_TESTS.find(t => t.id === activeTest.id);
-        activeTest.cards = JSON.parse(JSON.stringify(original.cards));
-      }
+    // --- 5. FORM SUBMISSION (ADD TEST) ---
+    function handleNewTestSubmit(e) {
+      e.preventDefault();
 
-      activeCardIndex = 0;
-      knownCards = [];
-      unsureCards = [];
+      const newTest = {
+        id: "custom-" + Date.now(),
+        title: document.getElementById('formTitle').value.trim(),
+        grade: parseInt(document.getElementById('formGrade').value, 10),
+        subject: document.getElementById('formSubject').value,
+        type: document.getElementById('formType').value,
+        questionsCount: parseInt(document.getElementById('formQuestions').value, 10),
+        duration: parseInt(document.getElementById('formDuration').value, 10),
+        path: document.getElementById('formPath').value.trim(),
+        tag: document.getElementById('formTag').value.trim() || "Neu",
+        tagColor: "emerald",
+        description: document.getElementById('formDescription').value.trim() || "Keine Beschreibung hinterlegt.",
+        // If it's a relative path to your HTML file, we point directly to it
+        rawContent: null
+      };
 
-      document.getElementById('runnerSummary').classList.add('hidden');
-      document.getElementById('runnerCardContainer').classList.remove('hidden');
-      document.getElementById('runnerProgressSection').classList.remove('hidden');
-      document.getElementById('runnerControlsRow').classList.remove('hidden');
+      testsRegistry.unshift(newTest);
+      saveTestsRegistry(testsRegistry);
 
-      renderRunnerCard();
-    }
-
-    function updateMetrics() {
-      const activeGradeTests = ALL_TESTS.filter(t => currentGradeFilter === 'all' || t.grade.toString() === currentGradeFilter);
-      document.getElementById('statTotalTests').textContent = activeGradeTests.length;
-      document.getElementById('statCompletedSessions').textContent = completedSessionsCount;
+      closeModal('addTestModal');
+      document.getElementById('newTestForm').reset();
       
-      const avgRate = completedSessionsCount > 0 ? Math.round(totalScoreSum / completedSessionsCount) : 0;
-      document.getElementById('statSuccessRate').textContent = completedSessionsCount > 0 ? `${avgRate}%` : '--%';
+      // Switch filters to view the newly added test
+      currentGrade = newTest.grade.toString();
+      setLevel1Grade(currentGrade);
+    }
+
+    // --- 6. EXPORT / BACKUP REGISTRY ---
+    function exportTestsJSON() {
+      // Export a clean copy without huge embedded strings for easy git commit
+      const cleanRegistry = testsRegistry.map(({ rawContent, ...rest }) => rest);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cleanRegistry, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "tests-registry.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
     // --- 7. MODALS HELPER ---
@@ -1182,33 +724,9 @@
       document.getElementById(id).classList.add('hidden');
     }
 
-    // --- 8. KEYBOARD SHORTCUTS IN RUNNER ---
-    window.addEventListener('keydown', (e) => {
-      const runnerView = document.getElementById('view-runner');
-      const isRunnerActive = !runnerView.classList.contains('hidden');
-      const isSummaryOpen = !document.getElementById('runnerSummary').classList.contains('hidden');
-
-      if (isRunnerActive && !isSummaryOpen) {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          flipRunnerCard();
-        } else if (e.key === '1' && isFlipped) {
-          recordRunnerAnswer(false);
-        } else if (e.key === '2' && isFlipped) {
-          recordRunnerAnswer(true);
-        } else if (e.key === 'ArrowRight') {
-          skipRunnerCard();
-        } else if (e.key === 'ArrowLeft') {
-          prevRunnerCard();
-        }
-      }
-    });
-
-    // --- 9. BOOTSTRAP APP ---
+    // --- 8. INITIALIZE ---
     window.onload = function() {
-      renderSubjectCards();
-      applyCatalogFilters();
-      updateMetrics();
+      setLevel1Grade('6');
     };
   </script>
 
